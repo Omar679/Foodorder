@@ -1,4 +1,4 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import { products } from "../../../data/products";
@@ -8,17 +8,27 @@ import { useCart } from "@/src/Providers/CartProvider";
 import { PizzaSize } from "@/src/types";
 import { FontAwesome } from "@expo/vector-icons";
 import Colors from "@/src/constants/Colors";
+import { useProduct } from "@/src/api/products";
 
 const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
 
 const ProductDetails = () => {
+  const { id:idString } = useLocalSearchParams();
+
+  const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
+
+  const { data: product, error, isLoading } = useProduct(id);
+
+
   const [activeSize, setActiveSize] = useState<PizzaSize>("S");
-  const { id } = useLocalSearchParams();
   const { addItem } = useCart();
-  const product = products.find((p) => p.id.toString() === id);
-  if (!product) {
-    return <Text>Product Not Found</Text>;
+  if (isLoading) {
+    return <ActivityIndicator />;
   }
+  if (error) {
+    return <Text>Faild to fetch product</Text>;
+  }
+
 
   const addToChart = () => {
     addItem(product, activeSize);

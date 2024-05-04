@@ -1,15 +1,27 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import { Link, Redirect, Stack } from "expo-router";
 import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
+import { supabase } from "@/src/lib/supabase";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const signUpWithEmail = async () => {
+    setLoading(true);
+    let { error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      Alert.alert(error.message);
+    }
+    setLoading(false);
+  };
+
   return (
     <View style={styles.container}>
-      <Stack.Screen  options={{title:'Sign Up'}}/>
+      <Stack.Screen options={{ title: "Sign Up" }} />
       <Text style={styles.header}>Email</Text>
       <TextInput
         placeholder="jon@gmail.com"
@@ -24,9 +36,13 @@ const SignUp = () => {
         value={password}
         onChangeText={setPassword}
       />
-      <Button text="Sign in" />
+      <Button
+        text={loading ? "Creating an account..." : "Create an account"}
+        onPress={signUpWithEmail}
+        disabled={loading}
+      />
       <Link href={"/(auth)/"} asChild>
-        <Text style={styles.subtext}>Create an account</Text>
+        <Text style={styles.subtext}>Already Have an account?</Text>
       </Link>
     </View>
   );

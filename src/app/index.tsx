@@ -1,20 +1,35 @@
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import React from "react";
 import Button from "../components/Button";
-import { Link, Stack } from "expo-router";
+import { Link, Redirect, Stack } from "expo-router";
+import { useAuth } from "../Providers/AuthProvider";
+import { supabase } from "../lib/supabase";
 
 const index = () => {
+  const { session, loading, isAdmin } = useAuth();
+  console.log(session);
+
+  if (loading) {
+    return <ActivityIndicator />;
+  }
+
+  if (!session) {
+    return <Redirect href={"/(auth)/"} />;
+  }
+
+  if (!isAdmin) {
+    return <Redirect href={"/(user)"} />;
+  }
+
   return (
     <View style={{ flex: 1, justifyContent: "center", padding: 10 }}>
-      <Link href={"/(auth)/"} asChild>
-        <Button text="Authentication" />
-      </Link>
-      <Link href={"/(user)/menu/"} asChild>
+      <Link href={"/(user)/"} asChild>
         <Button text="User" />
       </Link>
-      <Link href={"/(admin)/menu/"} asChild>
+      <Link href={"/(admin)"} asChild>
         <Button text="Admin" />
       </Link>
+      <Button text="Signout" onPress={() => supabase.auth.signOut()} />
     </View>
   );
 };

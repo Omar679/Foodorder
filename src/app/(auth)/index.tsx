@@ -1,19 +1,51 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import React from "react";
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useState } from "react";
 import { Link, Redirect, Stack } from "expo-router";
 import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
+import { supabase } from "@/src/lib/supabase";
 
 const Signin = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const signInWithEmail = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      Alert.alert(error.message);
+    }
+    setLoading(false);
+  };
+
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: "Sign In" }} />
 
       <Text style={styles.header}>Email</Text>
-      <TextInput placeholder="jon@gmail.com" style={styles.input} />
+      <TextInput
+        placeholder="jon@gmail.com"
+        style={styles.input}
+        value={email}
+        onChangeText={setEmail}
+      />
       <Text style={styles.header}>Password</Text>
-      <TextInput style={styles.input} secureTextEntry />
-      <Button text="Sign in" />
+      <TextInput
+        style={styles.input}
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
+      <Button
+        text={loading ? "Signing in..." : "Sign in"}
+        disabled={loading}
+        onPress={signInWithEmail}
+      />
       <Link href={"/(auth)/SignUp"} asChild>
         <Text style={styles.subtext}>Create an account</Text>
       </Link>

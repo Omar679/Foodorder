@@ -5,11 +5,13 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { useColorScheme } from "../components/useColorScheme";
 import ChartProvider from "../Providers/CartProvider";
+import AuthProvider, { useAuth } from "../Providers/AuthProvider";
+import QueryProvider from "../Providers/QueryProvider";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -53,14 +55,18 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <ChartProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-          <Stack.Screen name="(user)" options={{ headerShown: false }} />
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="chart" options={{ presentation: "modal" }} />
-        </Stack>
-      </ChartProvider>
+      <AuthProvider>
+        <QueryProvider>
+          <ChartProvider>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+              <Stack.Screen name="(user)" options={{ headerShown: false }} />
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              <Stack.Screen name="chart" options={{ presentation: "modal" }} />
+            </Stack>
+          </ChartProvider>
+        </QueryProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
