@@ -22,7 +22,6 @@ const ProductDetails = () => {
   const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
   const { data: product, error, isLoading } = useProduct(id);
 
-
   const [activeSize, setActiveSize] = useState<PizzaSize>("S");
   const { addItem } = useCart();
   if (isLoading) {

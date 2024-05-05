@@ -1,4 +1,11 @@
-import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import { products } from "../../../data/products";
@@ -13,12 +20,11 @@ import { useProduct } from "@/src/api/products";
 const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
 
 const ProductDetails = () => {
-  const { id:idString } = useLocalSearchParams();
+  const { id: idString } = useLocalSearchParams();
 
   const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
 
   const { data: product, error, isLoading } = useProduct(id);
-
 
   const [activeSize, setActiveSize] = useState<PizzaSize>("S");
   const { addItem } = useCart();
@@ -28,7 +34,6 @@ const ProductDetails = () => {
   if (error) {
     return <Text>Faild to fetch product</Text>;
   }
-
 
   const addToChart = () => {
     addItem(product, activeSize);
