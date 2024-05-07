@@ -13,7 +13,6 @@ import {
 } from "@/src/api/products";
 
 const CreateProductScreen = () => {
-  <Stack.Screen options={{ title: "Create Product" }} />;
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [error, setError] = useState("");

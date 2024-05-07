@@ -5,9 +5,10 @@ import { useCart } from "../Providers/CartProvider";
 import { CartItem, Product } from "../types";
 import CartListItem from "../components/CartListItem";
 import Button from "../components/Button";
+import { useInsertOrder } from "../api/orders";
 
 const chart = () => {
-  const { items,total } = useCart();
+  const { items, total, checkout } = useCart();
 
   return (
     <View>
@@ -18,7 +19,7 @@ const chart = () => {
         renderItem={({ item }) => <CartListItem cartItem={item} />}
       />
       <Text>Total ${total}</Text>
-      <Button text="Checkout" />
+      <Button text="Checkout" onPress={checkout} />
     </View>
   );
 };
